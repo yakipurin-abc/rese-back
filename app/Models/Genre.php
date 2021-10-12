@@ -11,7 +11,7 @@ class Genre extends Model
 {
     use HasFactory;
 
-    protected $guarded = array('id');
+    protected $fillable = array('id');
 
     public static $rules = array(
         'name' => 'required',
