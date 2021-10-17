@@ -42,7 +42,7 @@ class AuthController extends Controller
     {
         $credentials = request(['name', 'password']);
 
-        if (!$token = auth('musers')->attempt($credentials)) {
+        if (!$token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 

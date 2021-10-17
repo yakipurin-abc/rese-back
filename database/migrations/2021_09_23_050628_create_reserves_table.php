@@ -16,13 +16,13 @@ class CreateReservesTable extends Migration
         Schema::create('reserves', function (Blueprint $table) {
             $table->id();
             $table->integer('shop_id')->unsigned();
-            $table->bigInteger('user_id')->unsigned();
+            $table->string('user_id');
             $table->date('date');
             $table->time('time');
             $table->integer('number');
             $table->timestamps();
             $table->foreign('shop_id')->references('id')->on('shops')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            
         });
     }
 

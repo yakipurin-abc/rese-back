@@ -45,7 +45,6 @@ class LikeController extends Controller
     public function show(Request $request)
     {
         $items = Like::with(['shop.area', 'shop.genre'])->where('user_id', $request->user_id)->get();
-        
         $likes = Shop::with('area', 'genre')->get();
         foreach ($likes as $like) {
             $item = Like::where('user_id', $request->user_id)->where('shop_id', $like->id)->get();
@@ -59,8 +58,6 @@ class LikeController extends Controller
         return response()->json([
             'data' => $likes,
             'items' => $items,
-
-
         ], 200);
     }
     /**
