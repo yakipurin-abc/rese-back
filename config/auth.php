@@ -17,7 +17,6 @@ return [
             'provider' => 'users',
             'hash' => false,
         ],
-        
     ],
 
     'providers' => [
@@ -25,7 +24,6 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-        
 
         // 'users' => [
         //     'driver' => 'database',

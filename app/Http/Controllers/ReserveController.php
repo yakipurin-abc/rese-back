@@ -13,9 +13,19 @@ class ReserveController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if (empty($request->user_id) ) {
+            $items = Reserve::all();
+            return response()->json([
+                'data' => $items,
+            ], 200);
+        }
+        list($reserves, $items, ) = $this->reservesUser($request->id, $request->user_id);
+        return response()->json([
+            'data' => $reserves,
+            'items' => $items,
+        ], 200);
     }
 
     /**
@@ -26,6 +36,7 @@ class ReserveController extends Controller
      */
     public function store(ClientRequest $request)
     {
+        $name = $request->input('name');
         $user_id = $request->input('user_id');
         $shop_id = $request->input('shop_id');
         $date = $request->input('date');
@@ -33,6 +44,7 @@ class ReserveController extends Controller
         $number = $request->input('number');
         $item = new Reserve;
         $item->user_id = $user_id;
+        $item->name = $name;
         $item->shop_id = $shop_id;
         $item->date = $date;
         $item->time = $time;
@@ -50,19 +62,16 @@ class ReserveController extends Controller
      * @param  \App\Models\Reserve  $reserve
      * @return \Illuminate\Http\Response
      */
+
     public function show(Request $request)
     {
-        $reserves =
-        Reserve::with(['shop.area', 'shop.genre', 'user'])->get()->where('shop_id', $request->id);
-        $items = Reserve::with('shop')->get()->where('user_id', $request->id);
+        $items = Reserve::with('shop')->where('shop_id', $request->shop_id)->get();
         if ($items) {
             return response()->json([
-                'data' => $items,
-                'reserves' =>$reserves
+                'reserves' => $items,
             ], 200);
         }
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -112,6 +121,35 @@ class ReserveController extends Controller
             return response()->json([
                 'message' => 'Not found',
             ], 404);
+        }
+    }
+
+    /**
+     * ユーザーが予約しているかを取得
+     *
+     * @param string $user_id firebaseのユーザーID
+     * @return array $shop_id shopのID
+     */
+    private function reservesUser($shop_id, $user_id)
+    {
+        $reserves = Reserve::with(['shop.area', 'shop.genre'])->get()->where('shop_id', $shop_id);
+        $items = Reserve::with('shop')->where('user_id', $user_id)->get();
+        $evaluation =
+        Reserve::with('shop')->where('shop_id', $shop_id)->where('user_id', $user_id)->get();
+            return [$reserves, $items, $evaluation] ;
+    }
+
+    public function get(Request $request)
+    {
+        $reserves = Reserve::with('shop')->where('shop_id', $request->shop_id)->get();
+
+        if ($reserves) {
+            return response()->json([
+                'message' => 'Reserves got successfully',
+                'data' => $reserves,
+            ], 200);
+        } else {
+            return response()->json(['status' => 'not found'], 404);
         }
     }
 }

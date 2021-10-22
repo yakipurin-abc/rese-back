@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Muser;
+
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -15,11 +15,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        $items = User::all();
-        $musers = Muser::with('role')->get();
+        $users = User::with('role')->get();
         return response()->json([
-            'data' => $items,
-            'muser' => $musers,
+            'user' => $users,
         ], 200);
     }
 
@@ -54,7 +52,27 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $update = [
+            'name' => $request->name,
+            'role_id' => $request->role_id,
+
+        ];
+        $item = User::where('id', $user->id)->update($update);
+        if ($item) {
+            return response()->json(
+                [
+                    'message' => 'Updated successfully',
+                ],
+                200
+            );
+        } else {
+            return response()->json(
+                [
+                    'message' => 'Not found',
+                ],
+                404
+            );
+        }
     }
 
     /**

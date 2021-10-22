@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Area;
 use App\Models\Genre;
+use App\Models\Evaluation;
 
 class Shop extends Model
 {
@@ -38,5 +39,10 @@ class Shop extends Model
     public function genre()
     {
         return $this->belongsTo(Genre::class);
+    }
+
+    public function evaluation()
+    {
+        return $this->belongsTo(Evaluation::class);
     }
 }

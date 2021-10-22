@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Muser;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -16,29 +15,18 @@ class AuthController extends Controller
         $this->middleware('auth:api', ['except' => ['login']]);
     }
 
-    public function m_register(Request $request)
-    {
-        Muser::create([
-            "name" => $request->name,
-            "role_id" => $request->role_id,
-            "password" => Hash::make($request->password),
-            
-        ]);
-
-        return response()->json(['message' => 'Successfully user create']);
-    }
     public function register(Request $request)
     {
         User::create([
             "name" => $request->name,
-            "email" => $request->email,
+            "role_id" => $request->role_id,
             "password" => Hash::make($request->password)
         ]);
 
         return response()->json(['message' => 'Successfully user create']);
     }
 
-    public function m_login()
+    public function login()
     {
         $credentials = request(['name', 'password']);
 
@@ -49,21 +37,6 @@ class AuthController extends Controller
         return $this->respondWithToken($token);
     }
 
-    public function login()
-    {
-        $credentials = request(['email', 'password']);
-
-        if (!$token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-
-        return $this->respondWithToken($token);
-    }
-
-    public function mme()
-    {
-        return response()->json(auth()->muser());
-    }
     public function me()
     {
         return response()->json(auth()->user());

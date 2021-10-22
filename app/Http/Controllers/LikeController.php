@@ -13,13 +13,20 @@ class LikeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $items = Like::all();
-        $shop = Shop::with('likes')->get();
+        if (empty($request->user_id)) {
+            $items = Like::all();
+            $shop = Shop::with('likes')->get();
+            return response()->json([
+                'data' => $items,
+                'shop' => $shop,
+            ], 200);
+        }
+        list($likes, $items) = $this->likesUser($request->user_id);
         return response()->json([
-            'data' => $items,
-            'shop' => $shop,
+            'data' => $likes,
+            'items' => $items,
         ], 200);
     }
     /**
@@ -31,34 +38,9 @@ class LikeController extends Controller
     public function store(Request $request)
     {
         $item = Like::create($request->all());
-        $shops = Shop::all();
         return response()->json([
             'data' => $item,
         ], 201);
-    }
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Like  $like
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Request $request)
-    {
-        $items = Like::with(['shop.area', 'shop.genre'])->where('user_id', $request->user_id)->get();
-        $likes = Shop::with('area', 'genre')->get();
-        foreach ($likes as $like) {
-            $item = Like::where('user_id', $request->user_id)->where('shop_id', $like->id)->get();
-
-            if ($item->isEmpty()) {
-                $like->isLike = false;
-            } else {
-                $like->isLike = true;
-            }
-        }
-        return response()->json([
-            'data' => $likes,
-            'items' => $items,
-        ], 200);
     }
     /**
      * Update the specified resource in storage.
@@ -102,5 +84,27 @@ class LikeController extends Controller
                 'message' => 'Not found',
             ], 404);
         }
+    }
+
+    /**
+     * ユーザーがいいねしているかを取得
+     *
+     * @param string $user_id firebaseのユーザーID
+     * @return array
+     */
+    private function likesUser($user_id)
+    {
+        $items = Like::with(['shop.area', 'shop.genre'])->where('user_id', $user_id)->get();
+        $likes = Shop::with('area', 'genre')->get();
+        foreach ($likes as $like) {
+            $item = Like::where('user_id', $user_id)->where('shop_id', $like->id)->get();
+
+            if ($item->isEmpty()) {
+                $like->isLike = false;
+            } else {
+                $like->isLike = true;
+            }
+        }
+        return [$likes, $items];
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMusersTable extends Migration
+class CreateUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateMusersTable extends Migration
      */
     public function up()
     {
-        Schema::create('musers', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->tinyIncrements('id');
             $table->string('name', 10)->unique();
             $table->string('password');
@@ -30,6 +30,6 @@ class CreateMusersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('musers');
+        Schema::dropIfExists('users');
     }
 }
