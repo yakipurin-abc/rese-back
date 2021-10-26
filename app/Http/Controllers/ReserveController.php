@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Reserve;
 use Illuminate\Http\Request;
 use App\Http\Requests\ClientRequest;
+use Carbon\Carbon;
 
 class ReserveController extends Controller
 {
@@ -66,6 +67,8 @@ class ReserveController extends Controller
     public function show(Request $request)
     {
         $items = Reserve::with('shop')->where('shop_id', $request->shop_id)->get();
+
+        
         if ($items) {
             return response()->json([
                 'reserves' => $items,
@@ -147,6 +150,26 @@ class ReserveController extends Controller
             return response()->json([
                 'message' => 'Reserves got successfully',
                 'data' => $reserves,
+            ], 200);
+        } else {
+            return response()->json(['status' => 'not found'], 404);
+        }
+    }
+
+    public function check(Request $request)
+    {
+        $reserves = Reserve::where('shop_id', $request->shop_id)->where('user_id', $request->user_id)->get();
+        $test = Reserve::where('shop_id', $request->shop_id)->where('user_id', $request->user_id)->select('date')->get();
+        $date=Carbon::now()->format('Y-m-d');
+        $time = Carbon::now()->format('H:i:s');
+        $nowDateTime = $date.$time;
+        if ($reserves) {
+            return response()->json([
+                'data' => $reserves,
+                'date'=> $date,
+                'time' => $time,
+                'test' => $test,
+                'nowDateTime'=> $nowDateTime,
             ], 200);
         } else {
             return response()->json(['status' => 'not found'], 404);

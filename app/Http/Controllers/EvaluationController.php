@@ -70,6 +70,26 @@ class EvaluationController extends Controller
      */
     public function destroy(Evaluation $evaluation)
     {
-        //
+        $item = Evaluation::where('id', $evaluation->id)->delete();
+        if ($item) {
+            return response()->json([
+                'message' => 'Deleted successfully',
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Not found',
+            ], 404);
+        }
+    }
+    public function checkEva(Request $request)
+    {
+        $items = Evaluation::where('shop_id', $request->shop_id)->where('user_id', $request->user_id)->get();
+        if ($items) {
+            return response()->json([
+                'data' => $items,
+            ], 200);
+        } else {
+            return response()->json(['status' => 'not found'], 404);
+        }
     }
 }

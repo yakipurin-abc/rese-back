@@ -23,7 +23,6 @@ class CreateReservesTable extends Migration
             $table->integer('number');
             $table->timestamps();
             $table->foreign('shop_id')->references('id')->on('shops')->onDelete('cascade');
-            
         });
     }
 

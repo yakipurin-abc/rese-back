@@ -16,6 +16,7 @@ class Evaluation extends Model
         'rate' => 'required',
         'shop_id' => 'required',
         'name' => 'required',
+        'user_id' => 'required',
     );
 
     public function shop()

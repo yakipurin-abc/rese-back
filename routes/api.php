@@ -20,6 +20,8 @@ Route::group([
   Route::get('user', [AuthController::class, 'me']);
 });
 Route::get('v1/reserve/{shop_id}/', [ReserveController::class, 'get']);
+Route::get('v1/reserve/{shop_id}/{user_id}', [ReserveController::class, 'check']);
+Route::get('v1/evaluation/{shop_id}/{user_id}', [EvaluationController::class, 'checkEva']);
 
 Route::apiResource('/v1/like', LikeController::class);
 Route::apiResource('/v1/reserve', ReserveController::class);
