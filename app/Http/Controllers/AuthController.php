@@ -62,4 +62,9 @@ class AuthController extends Controller
             'expires_in' => auth()->factory()->getTTL() * 60
         ]);
     }
+    public function test()
+    {
+        return $this->respondWithToken(auth()->refresh());
+    }
+
 }
