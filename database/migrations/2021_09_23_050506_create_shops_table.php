@@ -18,7 +18,7 @@ class CreateShopsTable extends Migration
             $table->string('name', 10);
             $table->tinyInteger('area_id')->unsigned();
             $table->tinyInteger('genre_id')->unsigned();
-            $table->text('detail');
+            $table->text('detail' , 50);
             $table->string('image');
             $table->timestamps();
             $table->foreign('area_id')->references('id')->on('areas')->onDelete('cascade');
